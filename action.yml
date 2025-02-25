@@ -1,4 +1,4 @@
-name: fibbot
+name: Fibbot
 description: My workflow in Rust
 inputs:
   args:
