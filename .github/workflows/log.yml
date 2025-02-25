@@ -11,7 +11,7 @@ jobs:
 
     - name: Install stable toolchain
       uses: dtolnay/rust-toolchain@stable
-
+      
     - name: Install Fibbot
       run: cargo install --path .
 
