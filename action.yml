@@ -1,13 +1,13 @@
-name: Fibbot
+name: fibbot
 description: My workflow in Rust
 inputs:
   args:
-    description: Arguments passed to `Fibbot`
+    description: Arguments passed to `fibbot`
     required: true
     default: ''
 outputs:
   results:
-    description: The results from calling `Fibbot`
+    description: The results from calling `fibbot`
 runs:
   using: docker
   image: Dockerfile
