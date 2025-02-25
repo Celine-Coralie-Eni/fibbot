@@ -1,6 +1,6 @@
 name: Check own GitHub action
 on:
-  pull_request:
+  pull_request: 
 
 jobs:
   check_action:
