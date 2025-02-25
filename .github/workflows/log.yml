@@ -1,6 +1,6 @@
 name: Check own GitHub action
 on:
-  push:
+  pull_request:
 
 jobs:
   check_action:
@@ -11,13 +11,13 @@ jobs:
 
     - name: Install stable toolchain
       uses: dtolnay/rust-toolchain@stable
-      
+
     - name: Install Fibbot
       run: cargo install --path .
 
-    - name: Run fibbot
+    - name: Run myapp
       id: expected
-      run: echo "results=$(fibbot --option1 'value1')" >> $GITHUB_OUTPUT
+      run: echo "results=$(myapp --option1 'value1')" >> $GITHUB_OUTPUT
 
     - name: Uses an action in the root directory
       uses: ./  # This is a trick to use the local GitHub action
