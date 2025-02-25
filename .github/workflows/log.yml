@@ -17,7 +17,7 @@ jobs:
 
     - name: Run myapp
       id: expected
-      run: echo "results=$(myapp --option1 'value1')" >> $GITHUB_OUTPUT
+      run: myapp --option1 'value1'
 
     - name: Uses an action in the root directory
       uses: ./  # This is a trick to use the local GitHub action
