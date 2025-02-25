@@ -1,0 +1,15 @@
+name: Fibbot
+description: My workflow in Rust
+inputs:
+  args:
+    description: Arguments passed to `Fibbot`
+    required: true
+    default: ''
+outputs:
+  results:
+    description: The results from calling `Fibbot`
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+  - ${{ inputs.args }}
