@@ -13,7 +13,7 @@ jobs:
       uses: dtolnay/rust-toolchain@stable
 
     - name: Install Fibbot
-      run: cargo install --path .
+      run: cargo install --path CARGO_TARGET_DIR
 
     - name: Run myapp
       id: expected
