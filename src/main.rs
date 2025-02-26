@@ -1,13 +1,15 @@
 fn main() {
-    print!("Hello world");
-        let n = 100; 
-        println!("Fibonacci numbers up to {}:", n);
-        for i in 0..n {
-            println!("{}", fibonacci(i));
-        }
+    // print!("Hello world");
+    //     let n = 100; 
+    //     println!("Fibonacci numbers up to {}:", n);
+    //     for i in 0..n {
+    //         println!("{}", fibonacci(i));
+    //     }
    
     // if n = f32 {
     //     println!("invalid input");
+ use github_actions::core;
+   use std::env;
 
    // fn main() {
        // Get inputs from the environment
