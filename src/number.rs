@@ -1,4 +1,6 @@
-pub fn fibonacci(n: u32) -> u32 {
+use std::u128;
+
+pub fn fibonacci(n: u128) -> u128 {
     if n == 0 {
         return 0;
     } else if n == 1 {

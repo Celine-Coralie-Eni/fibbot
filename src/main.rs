@@ -2,7 +2,7 @@ use number::fibonacci;
 
 fn main() {
     print!("Hello world");
-        let n = 29; 
+        let n = 100; 
         println!("Fibonacci numbers up to {}:", n);
         for i in 0..n {
             println!("{}", fibonacci(i));
