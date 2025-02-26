@@ -9,9 +9,6 @@ fn main() {
     // if n = f32 {
     //     println!("invalid input");
 
-    use github_actions::core;
-   use std::env;
-
    // fn main() {
        // Get inputs from the environment
        let enable_fib: bool = core::get_input("enable_fib").unwrap_or("false".to_string()) == "true";
