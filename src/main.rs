@@ -5,7 +5,7 @@ fn main() {
         for i in 0..n {
             println!("{}", fibonacci(i));
         }
-    
+}    
     // if n = f32 {
     //     println!("invalid input");
 
