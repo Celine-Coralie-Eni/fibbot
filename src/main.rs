@@ -10,7 +10,7 @@ fn main() {
     //     println!("invalid input");
 
     use github_actions::core;
-   use std::env;
+   use std::env::CARGO_TARGET_DIR;
 
    fn main() {
        // Get inputs from the environment
