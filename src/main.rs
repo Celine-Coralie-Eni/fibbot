@@ -1,5 +1,4 @@
 fn main() {
-<<<<<<< HEAD
     print!("Hello world");
         let n = 100; 
         println!("Fibonacci numbers up to {}:", n);
@@ -9,7 +8,7 @@ fn main() {
     
     // if n = f32 {
     //     println!("invalid input");
-=======
+
     use github_actions::core;
    use std::env;
 
@@ -33,7 +32,7 @@ fn main() {
         return 0;
     } else if n == 1 {
         return 1;
->>>>>>> refs/remotes/origin/master
+        
     }
 
     let mut a = 0;
