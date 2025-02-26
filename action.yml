@@ -1,13 +1,25 @@
-name: Fibbot
-description: My workflow in Rust
+name: MyApp
+author: Jérome Eertmans
+description: My super Rust application
+branding:  # You can change this
+  icon: align-left
+  color: blue
 inputs:
+  enable_fib:
+    description: 'Enable Fibonacci sequence generation'
+    required: true
+    default: ''
+  max_threshold:
+    description: 'Maximum threshold for Fibonacci sequence'
+    required: true
+    default: '100'
   args:
-    description: Arguments passed to `fibbot`
+    description: Arguments passed to `myapp`
     required: true
     default: ''
 outputs:
   results:
-    description: The results from calling `fibbot`
+    description: The results from calling `myapp`
 runs:
   using: docker
   image: Dockerfile

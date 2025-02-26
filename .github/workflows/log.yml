@@ -1,24 +1,35 @@
-name: Rust
-
+name: Check own GitHub action
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  push: 
+    branches:
+       - main
 
-env:
-  CARGO_TERM_COLOR: always
-
-jobs: 
-  build:
-
+jobs:
+  check_action:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Build 
-      run: cargo build --verbose
-    - name: print hello world
-      run: cargo run
-    - name: Run tests 
-      run: cargo test --verbose
+    - name: Checkout sources
+      uses: actions/checkout@v3
+ 
+    - name: Install stable toolchain
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Install Fibbot
+      run: cargo install --path .
+
+    - name: Run myapp
+      id: expected
+      run: myapp --option1 'value1'
+
+    - name: Uses an action in the root directory
+      uses: ./  # This is a trick to use the local GitHub action
+      id: actual
+      with:
+         enable_fib: "true"
+         max_threshold: "100"
+
+    - name: Compare outputs
+      uses: nick-fields/assert-action@v1
+      with:
+        expected: ${{ steps.expected.outputs.files }}
+        actual: ${{ steps.actual.outputs.files }}
