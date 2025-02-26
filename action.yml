@@ -5,6 +5,14 @@ branding:  # You can change this
   icon: align-left
   color: blue
 inputs:
+  enable_fib:
+    description: 'Enable Fibonacci sequence generation'
+    required: true
+    default: ''
+  max_threshold:
+    description: 'Maximum threshold for Fibonacci sequence'
+    required: true
+    default: '100'
   args:
     description: Arguments passed to `myapp`
     required: true
