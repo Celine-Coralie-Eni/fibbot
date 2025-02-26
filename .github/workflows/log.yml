@@ -1,6 +1,8 @@
 name: Check own GitHub action
 on:
   push: 
+    branches:
+       - main
 
 jobs:
   check_action:
@@ -23,7 +25,8 @@ jobs:
       uses: ./  # This is a trick to use the local GitHub action
       id: actual
       with:
-        args: "--option1 'value1'"
+         enable_fib: "true"
+         max_threshold: "100"
 
     - name: Compare outputs
       uses: nick-fields/assert-action@v1
