@@ -34,4 +34,77 @@ fn test_input_parsing() {
     // Verify the parsed values
     assert_eq!(true, env::var("INPUT_ENABLE_FIB").unwrap().parse::<bool>().unwrap());
     assert_eq!(200, env::var("INPUT_MAX_THRESHOLD").unwrap().parse::<i32>().unwrap());
+
+
+fn extract_numbers(input: &str) -> Vec<i32> {
+    let mut numbers = Vec::new();
+    for word in input.split_whitespace() {
+        if let Ok(num) = word.parse::<i32>() {
+            numbers.push(num);
+        }
+    }
+    numbers
+}
+
+ pub fn fibonacci(n: u32) -> u32 {
+    if n == 0 {
+        return 0;
+    } else if n == 1 {
+        return 1;
+    }
+
+    let mut a = 0;
+    let mut b = 1;
+    let mut c;
+
+    for _ in 2..=n {
+        c = a + b;
+        a = b;
+        b = c;
+    }
+
+    b
+}
+
+
+#[test]
+fn test_fibonacci_edge_cases() {
+    assert_eq!(fibonacci(0), 0);
+    assert_eq!(fibonacci(1), 1);
+    assert_eq!(fibonacci(2), 1);
+    assert_eq!(fibonacci(3), 2);
+    assert_eq!(fibonacci(10), 55);
+
+    // Test for negative input
+    assert!(std::panic::catch_unwind(|| fibonacci(-1)).is_err());
+}
+
+#[test]
+fn test_fibonacci_efficiency() {
+    // Test the function's efficiency for large inputs
+    assert_eq!(fibonacci(93), 12200160415121876738);
+    assert_eq!(fibonacci(94), 19740274219868223167);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
