@@ -1,5 +1,6 @@
  use std::env;
    fn main() {
+    println!("Hello World!");
        // Parse the input parameters
        let enable_fib = env::var("INPUT_ENABLE_FIB")
            .unwrap_or_else(|_| "false".to_string())
