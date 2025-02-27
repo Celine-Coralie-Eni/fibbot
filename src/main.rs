@@ -36,6 +36,16 @@ fn test_input_parsing() {
     assert_eq!(200, env::var("INPUT_MAX_THRESHOLD").unwrap().parse::<i32>().unwrap());
 
 
+  let sample_pr_content = "The PR contains 5 changes and 3 bug fixes. The max threshold is 100.";
+    let extracted_numbers = extract_numbers(sample_pr_content);
+
+    println!("Extracted numbers: {:?}", extracted_numbers);
+
+    for num in extracted_numbers {
+        println!("Fibonacci of {} is {}", num, fibonacci(num as u64));
+    }
+
+
 fn extract_numbers(input: &str) -> Vec<i32> {
     let mut numbers = Vec::new();
     for word in input.split_whitespace() {
@@ -45,6 +55,7 @@ fn extract_numbers(input: &str) -> Vec<i32> {
     }
     numbers
 }
+
 
  pub fn fibonacci(n: u32) -> u32 {
     if n == 0 {
@@ -92,13 +103,14 @@ fn test_fibonacci_efficiency() {
 
 
 
+ 
 
 
 
 
 
 
-
+   
 
 
 
