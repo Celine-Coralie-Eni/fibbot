@@ -1,6 +1,6 @@
 name: MyApp
 author: Jérome Eertmans
-description: My super Rust application
+description: A GitHub Action written in Rust
 branding:  # You can change this
   icon: align-left
   color: blue
@@ -8,7 +8,7 @@ inputs:
   enable_fib:
     description: 'Enable Fibonacci sequence generation'
     required: true
-    default: ''
+    default: 'false'
   max_threshold:
     description: 'Maximum threshold for Fibonacci sequence'
     required: true
