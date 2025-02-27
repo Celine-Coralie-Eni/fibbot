@@ -1,4 +1,6 @@
  use std::env;
+use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
+use serde_json::{json, Value};
    fn main() {
     println!("Hello World!");
        // Parse the input parameters
@@ -44,7 +46,6 @@ fn test_input_parsing() {
     for num in extracted_numbers {
         println!("Fibonacci of {} is {}", num, fibonacci(num as u64));
     }
-
 
 fn extract_numbers(input: &str) -> Vec<i32> {
     let mut numbers = Vec::new();
@@ -97,7 +98,39 @@ fn test_fibonacci_efficiency() {
     assert_eq!(fibonacci(94), 19740274219868223167);
 }
 
+async fn post_pr_comment(
+    repo_owner: &str,
+    repo_name: &str,
+    pr_number: i32,
+    comment_text: &str,
+    github_token: &str,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let client = reqwest::Client::new();
+    let url = format!(
+        "https://api.github.com/repos/{}/{}/issues/{}/comments",
+        repo_owner, repo_name, pr_number
+    );
 
+    let payload = json!({
+        "body": comment_text
+    });
+
+    let response = client
+        .post(&url)
+        .header(AUTHORIZATION, format!("Bearer {}", github_token))
+        .header(CONTENT_TYPE, "application/json")
+        .json(&payload)
+        .send()
+        .await?;
+
+    if response.status().is_success() {
+        println!("Comment posted successfully!");
+    } else {
+        println!("Failed to post comment: {:?}", response.status());
+    }
+
+    Ok(())
+}
 
 
 
