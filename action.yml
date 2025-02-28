@@ -21,6 +21,6 @@ outputs:
     description: The results from calling `Fibbot`
 runs:
   using: docker
-  image: 'docker://rust:latest'
+  image: Dockerfile
   args:
   - ${{ inputs.args }}
