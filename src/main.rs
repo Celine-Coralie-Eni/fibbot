@@ -1,11 +1,9 @@
 use reqwest::blocking::Client;
-<<<<<<< HEAD
-=======
-// use serde_json::{json, Value};
->>>>>>> refs/remotes/origin/master
+
 use std::env::{self, args};
 fn main() {
     println!("Hello World!");
+
     let args: Vec<String> = args().skip(1).collect();
 
     if args.is_empty() {
