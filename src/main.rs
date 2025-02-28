@@ -1,28 +1,36 @@
- use std::env;
-// use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
-// use serde_json::{json, Value};
-   fn main() {
+use reqwest::blocking::Client;
+use serde_json::{json, Value};
+use std::env::{self, args};
+fn main() {
     println!("Hello World!");
-       // Parse the input parameters
-       let enable_fib = env::var("INPUT_ENABLE_FIB")
-           .unwrap_or_else(|_| "false".to_string())
-           .parse::<bool>()
-           .unwrap_or(false);
+    let args: Vec<String> = args().skip(1).collect();
 
-       let max_threshold = env::var("INPUT_MAX_THRESHOLD")
-           .unwrap_or_else(|_| "100".to_string())
-           .parse::<i32>()
-           .unwrap_or(100);
+    if args.is_empty() {
+        println!("No arguments supplied.");
+        return;
+    } else if args.len() != 2 {
+        println!("Fibbot requires exactly two parameters.");
+        return;
+    }
 
-       // Demonstrate the usage of the parameters
-       if enable_fib {
-           println!("Calculating Fibonacci sequence up to {}", max_threshold);
-           // Implement Fibonacci sequence calculation here
-       } else {
-           println!("Fibonacci sequence calculation is impossible. Max threshold is {}", max_threshold);
-       }
-   }
+    let enable_fib = args[0].to_lowercase() == "true";
 
+    let max_threshold: usize = match args[1].parse() {
+        Ok(value) => value,
+        Err(_) => {
+            println!("Invalid max_threshold value! It must be an integer.");
+            return;
+        }
+    };
+
+    if enable_fib {
+        println!("Fibbot enabled successfully with max_threshold: {}", max_threshold);
+        let fib_result = fibonacci(max_threshold.try_into().unwrap());
+        println!("Fibonacci result: {}", fib_result);
+    } else {
+        println!("Fibonacci calculation is disabled.");
+    }
+}
 
 #[test]
 fn test_input_parsing() {
@@ -34,18 +42,30 @@ fn test_input_parsing() {
     main();
 
     // Verify the parsed values
-    assert_eq!(true, env::var("INPUT_ENABLE_FIB").unwrap().parse::<bool>().unwrap());
-    assert_eq!(200, env::var("INPUT_MAX_THRESHOLD").unwrap().parse::<i32>().unwrap());
+    assert_eq!(
+        true,
+        env::var("INPUT_ENABLE_FIB")
+            .unwrap()
+            .parse::<bool>()
+            .unwrap()
+    );
+    assert_eq!(
+        200,
+        env::var("INPUT_MAX_THRESHOLD")
+            .unwrap()
+            .parse::<i32>()
+            .unwrap()
+    );
 
-
-  let sample_pr_content = "The PR contains 5 changes and 3 bug fixes. The max threshold is 100.";
+    let sample_pr_content = "The PR contains 5 changes and 3 bug fixes. The max threshold is 100.";
     let extracted_numbers = extract_numbers(sample_pr_content);
 
     println!("Extracted numbers: {:?}", extracted_numbers);
 
     for num in extracted_numbers {
-        println!("Fibonacci of {} is {}", num, fibonacci(num as u64));
+        println!("Fibonacci of {} is {}", num, fibonacci(num as u128));
     }
+}
 
 fn extract_numbers(input: &str) -> Vec<i32> {
     let mut numbers = Vec::new();
@@ -57,8 +77,7 @@ fn extract_numbers(input: &str) -> Vec<i32> {
     numbers
 }
 
-
- pub fn fibonacci(n: u32) -> u32 {
+pub fn fibonacci(n: u128) -> u128 {
     if n == 0 {
         return 0;
     } else if n == 1 {
@@ -78,7 +97,6 @@ fn extract_numbers(input: &str) -> Vec<i32> {
     b
 }
 
-
 #[test]
 fn test_fibonacci_edge_cases() {
     assert_eq!(fibonacci(0), 0);
@@ -88,7 +106,7 @@ fn test_fibonacci_edge_cases() {
     assert_eq!(fibonacci(10), 55);
 
     // Test for negative input
-    assert!(std::panic::catch_unwind(|| fibonacci(-1)).is_err());
+    assert!(std::panic::catch_unwind(|| fibonacci(u128::MAX)).is_err());
 }
 
 #[test]
@@ -98,58 +116,28 @@ fn test_fibonacci_efficiency() {
     assert_eq!(fibonacci(94), 19740274219868223167);
 }
 
-async fn post_pr_comment(
-    repo_owner: &str,
-    repo_name: &str,
-    pr_number: i32,
-    comment_text: &str,
-    github_token: &str,
-) -> Result<(), Box<dyn std::error::Error>> {
-    let client = reqwest::Client::new();
+pub fn get_pr_body(pr_number: u128) -> Result<String, Box<dyn std::error::Error>> {
+    let repo = env::var("GITHUB_REPOSITORY")?;
+    let token = env::var("GITHUB_TOKEN")?;
     let url = format!(
-        "https://api.github.com/repos/{}/{}/issues/{}/comments",
-        repo_owner, repo_name, pr_number
+        "https://api.github.com/repos/{}/pulls/{}/files",
+        repo, pr_number
     );
 
-    let payload = json!({
-        "body": comment_text
-    });
-
+    let client = Client::new();
     let response = client
-        .post(&url)
-        .header(AUTHORIZATION, format!("Bearer {}", github_token))
-        .header(CONTENT_TYPE, "application/json")
-        .json(&payload)
-        .send()
-        .await?;
+        .get(&url)
+        .header("User-Agent", "FibBot")
+        .header("Accept", "application/vnd.github.full+json")
+        .bearer_auth(token)
+        .send()?;
 
     if response.status().is_success() {
-        println!("Comment posted successfully!");
-    } else {
-        println!("Failed to post comment: {:?}", response.status());
+        let json: serde_json::Value = response.json()?;
+        if let Some(body) = json.get("body") {
+            return Ok(body.as_str().unwrap_or("").to_string());
+        }
     }
 
-    Ok(())
-}
-
-
-
-
-
- 
-
-
-
-
-
-
-   
-
-
-
-
-
-
-
-
+    Err("Failed to get pull_request body".into())
 }
