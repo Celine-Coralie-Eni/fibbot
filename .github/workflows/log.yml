@@ -1,36 +1,48 @@
-name: Check own GitHub action
+name: Fibbot GitHub Action
 on:
- pull_request:
-   types: [opened, synchronize, reopened]
- push: 
-   branches:
-     - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - master
 jobs:
   check_action:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout sources
-      uses: actions/checkout@v3
- 
-    - name: Install stable toolchain
-      uses: dtolnay/rust-toolchain@stable
+      - name: Checkout sources
+        uses: actions/checkout@v3
 
-    - name: Install Fibbot
-      run: cargo install --path .
+      - name: Install stable toolchain
+        uses: dtolnay/rust-toolchain@stable
 
-    - name: Run myapp
-      id: expected
-      run: myapp --option1 'value1'
+      - name: Install Fibbot
+        run: cargo install --path .
 
-    - name: Uses an action in the root directory
-      uses: ./  # This is a trick to use the local GitHub action
-      id: actual
-      with:
-         enable_fib: "true"
-         max_threshold: "100"
+      - name: Run myapp
+        id: expected
+        run: myapp --option1 'value1'
 
-    - name: Compare outputs
-      uses: nick-fields/assert-action@v1
-      with:
-        expected: ${{ steps.expected.outputs.files }}
-        actual: ${{ steps.actual.outputs.files }}
+      - name: Uses an action in the root directory
+        uses: ./ # This is a trick to use the local GitHub action
+        id: actual
+        with:
+          enable_fib: "true"
+          max_threshold: "100"
+
+      - name: Compare outputs
+        uses: nick-fields/assert-action@v1
+        with:
+          expected: ${{ inputs.expected.outputs.files }}
+          actual: ${{ inputs.actual.outputs.files }}
+
+          run: |
+            docker run \
+              -e INPUT_ENABLE_FIB=true \
+              -e INPUT_MAX_THRESHOLD=1000 \
+              -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+              -e GITHUB_API_URL=https://api.github.com \
+              -e GITHUB_REPOSITORY=${{ github.repository }} \
+              -e GITHUB_REF=${{ github.head_ref }} \
+               Fibbot GitHub Action
+
+

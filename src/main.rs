@@ -1,9 +1,10 @@
 use reqwest::blocking::Client;
+// use serde_json::{json, Value};
 
 use std::env::{self, args};
 fn main() {
     println!("Hello World!");
-
+    
     let args: Vec<String> = args().skip(1).collect();
 
     if args.is_empty() {
@@ -33,11 +34,31 @@ fn main() {
     }
 }
 
+pub fn fibonacci(n: u128) -> u128 {
+    if n == 0 {
+        return 0;
+    } else if n == 1 {
+        return 1;
+    }
+
+    let mut a = 0;
+    let mut b = 1;
+    let mut c;
+
+    for _ in 2..=n {
+        c = a + b;
+        a = b;
+        b = c;
+    }
+
+    b
+}
+
 #[test]
 fn test_input_parsing() {
     // Set the environment variables for the input parameters
     std::env::set_var("INPUT_ENABLE_FIB", "true");
-    std::env::set_var("INPUT_MAX_THRESHOLD", "200");
+    std::env::set_var("INPUT_MAX_THRESHOLD", "100");
 
     // Call the main function to parse the inputs
     main();
@@ -78,25 +99,6 @@ fn extract_numbers(input: &str) -> Vec<i32> {
     numbers
 }
 
-pub fn fibonacci(n: u128) -> u128 {
-    if n == 0 {
-        return 0;
-    } else if n == 1 {
-        return 1;
-    }
-
-    let mut a = 0;
-    let mut b = 1;
-    let mut c;
-
-    for _ in 2..=n {
-        c = a + b;
-        a = b;
-        b = c;
-    }
-
-    b
-}
 
 #[test]
 fn test_fibonacci_edge_cases() {
