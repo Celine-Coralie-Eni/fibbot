@@ -1,6 +1,5 @@
 use std::env;
 use reqwest::Client;
-use crate::{extract_num::extract_numbers, fibonacci::fibonacci_calc, get_pr::get_pr_body};
 
 pub async fn post_comment(pr_content: &str) -> Result<(), reqwest::Error> {
     let repo = env::var("GITHUB_REPOSITORY").expect("GITHUB_REPOSITORY not set");

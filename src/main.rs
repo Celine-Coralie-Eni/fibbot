@@ -31,8 +31,8 @@ async fn main() {
 
     // Calculate Fibonacci values for the extracted numbers
     let mut fibonacci_values = String::from("the fibonacci are\n");
-    if let Ok(number) = numbers {
-        let fib = fibonacci_calc(50);
+    for number in numbers {
+        let fib = fibonacci_calc(number.try_into().unwrap());
         fibonacci_values.push_str(&format!("- Fibonacci({}) = {}\n", number, fib));
     }
     println!("values: {}", fibonacci_values);
