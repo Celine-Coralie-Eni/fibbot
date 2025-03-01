@@ -26,9 +26,9 @@ pub async fn post_comment(pr_content: &str) -> Result<(), reqwest::Error> {
         .await?;
 
     if response.status().is_success() {
-        println!("Comment posted successfully!");
+        println!(" 💯  ✅Comment posted successfully!");
     } else {
-        println!("Failed to post comment: {:?}", response.text().await?);
+        println!(" ❌  Failed to post comment: {:?}", response.text().await?);
     }
 
     Ok(())
