@@ -15,12 +15,12 @@ async fn main() {
     println!("Enable Fib: {}", enable_fib);
     println!("Max Threshold: {}", max_threshold);
 
-    let pr_number: u128 = env::var("PR_NUMBER")
-        .expect("PR_NUMBER not set")
-        .parse::<u128>()
-        .expect("Invalid PR_NUMBER");
+    
+        let pr_number = std::env::var("PR_NUMBER").unwrap_or_else(|_| "0".to_string());
+        let pr_number: i32 = pr_number.parse().expect("Invalid PR_NUMBER");
+    
     // Extract numbers from the pull request content
-    let numbers = get_pr_body(pr_number).await;
+    let numbers = get_pr_body(pr_number.try_into().unwrap()).await;
     println!("{:?}", numbers);
 
     // Calculate Fibonacci values for the extracted numbers
