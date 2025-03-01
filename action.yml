@@ -22,7 +22,7 @@ runs:
       run: |
         export PR_NUMBER="${{ inputs.pr_number }}"
         export GITHUB_TOKEN="${{ inputs.github_token }}"
-        ./target/bin "${{ inputs.enable_fib }}" "${{ inputs.max_threshold }}"
+        ./target/release/fibbot "${{ inputs.enable_fib }}" "${{ inputs.max_threshold }}"
       shell: bash 
 
 
