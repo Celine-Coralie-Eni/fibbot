@@ -22,6 +22,6 @@ jobs:
         with:
           enable_fib: true
           max_threshold: 100
-          #pr_number: ${{ github.event.pull_request.number }}
+          pr_number: ${{ github.event.pull_request.number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
