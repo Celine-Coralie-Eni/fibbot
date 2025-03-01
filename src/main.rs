@@ -30,62 +30,10 @@ fn main() {
 
     
 
-// Extract numbers from a string
-fn extract_numbers(input: &str) -> Vec<i32> {
-    let mut numbers = Vec::new();
-    for word in input.split_whitespace() {
-        if let Ok(num) = word.parse::<i32>() {
-            numbers.push(num);
-        }
-    }
-    numbers
-}
 
-// Get the body of a pull request
-pub async fn get_pr_body(pr_number: u128) -> Result<String, Box<dyn std::error::Error>> {
-    let repo = env::var("GITHUB_REPOSITORY")?;
-    let token = env::var("GITHUB_TOKEN")?;
-    let url = format!("https://api.github.com/repos/{}/pulls/{}", repo, pr_number);
 
-    let client = Client::new();
-    let response = client
-        .get(&url)
-        .header("User-Agent", "FibBot")
-        .header("Accept", "application/vnd.github.full+json")
-        .bearer_auth(token)
-        .send()
-        .await?;
 
-    if response.status().is_success() {
-        let json: Value = response.json().await?;
-        if let Some(body) = json.get("body") {
-            return Ok(body.as_str().unwrap_or("").to_string());
-        }
-    }
 
-    Err("Failed to get pull request body".into())
-}
-
-// Compute the nth Fibonacci number
-pub fn fibonacci(n: u128) -> u128 {
-    if n == 0 {
-        return 0;
-    } else if n == 1 {
-        return 1;
-    }
-
-    let mut a = 0;
-    let mut b = 1;
-    let mut c;
-
-    for _ in 2..=n {
-        c = a + b;
-        a = b;
-        b = c;
-    }
-
-    b
-}
 
 // Process PR content, compute Fibonacci numbers, and post a comment
 pub async fn process_pr(pr_number: u128) -> Result<(), Box<dyn std::error::Error>> {
@@ -194,3 +142,6 @@ fn test_fibonacci_efficiency() {
     assert_eq!(fibonacci(94), 19740274219868223167);
 }
 
+mod extract_num;
+mod get_pr;
+mod fibonacci;
