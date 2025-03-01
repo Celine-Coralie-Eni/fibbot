@@ -1,8 +1,5 @@
 name: Fibbot
-description: A GitHub Action written in Rust
-branding:
-  icon: align-left
-  color: blue
+description: A GitHub Action written in Rust to calculate Fibonacci numbers from a Pull Request contents
 
 inputs:
   enable_fib:
@@ -10,22 +7,23 @@ inputs:
     required: true
     default: 'true'
   max_threshold:
-    description: 'Maximum threshold for Fibonacci sequence'
+    description: 'Maximum number for fibonacci calcuation'
     required: true
     default: '100'
-  args:
-    description: Arguments passed to `Fibbot`
-    required: false  
-
-outputs:
-  results:
-    description: The results from calling `Fibbot`
-
 runs:
-  using: docker
-  image: Dockerfile
-  args:
-    - ${{ inputs.args }}
+  using: "composite"
+  #image: "Dockerfile"
+  steps: 
+    - name: Build Fibbot
+      run: cargo build --release
+      shell: bash
+
+    - name: Run Fibbot 
+      run: |
+        export PR_NUMBER="${{ inputs.pr_number }}"
+        export GITHUB_TOKEN="${{ inputs.github_token }}"
+        ./target/release/fibbot "${{ inputs.enable_fib }}" "${{ inputs.max_threshold }}"
+      shell: bash 
 
 
 
