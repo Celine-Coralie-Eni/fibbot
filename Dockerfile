@@ -1,4 +1,4 @@
-FROM rust:1.81.0
+FROM rust:latest
 
 WORKDIR /app
 
@@ -6,4 +6,4 @@ COPY . .
 
 RUN cargo build --release
 
-ENTRYPOINT ["/app/target/release/fib-bot"]
+ENTRYPOINT ["./target/release/fibbot"]
