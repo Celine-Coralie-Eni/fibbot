@@ -6,7 +6,7 @@ use post_comments::post_comment;
 #[tokio::main]
 async fn main() {
     // Read environment variables
-    let enable_fib = env::var("INPUT_ENABLE_FIB").unwrap_or_else(|_| "false".to_string());
+    let enable_fib = env::var("INPUT_ENABLE_FIB").unwrap_or_else(|_| "true".to_string());
     let max_threshold = env::var("INPUT_MAX_THRESHOLD").unwrap_or_else(|_| "100".to_string());
     let pr_number = env::var("PR_NUMBER").unwrap_or_else(|_| "2".to_string());
 
@@ -23,7 +23,7 @@ async fn main() {
     println!("Max Threshold: {}", max_threshold);
 
     // Extract numbers from the pull request content
-    let numbers = get_pr_body(pr_number.into()).await;
+    let numbers:Vec<u32> = get_pr_body(pr_number.into()).await;
     println!("{:?}", numbers);
 
     // Calculate Fibonacci values for the extracted numbers
