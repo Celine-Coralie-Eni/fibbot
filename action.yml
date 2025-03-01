@@ -1,27 +1,32 @@
 name: Fibbot
 description: A GitHub Action written in Rust
-branding:  # You can change this
+branding:
   icon: align-left
   color: blue
+
 inputs:
   enable_fib:
     description: 'Enable Fibonacci sequence generation'
     required: true
-    default: 'false'
+    default: 'true'
   max_threshold:
     description: 'Maximum threshold for Fibonacci sequence'
     required: true
     default: '100'
   args:
     description: Arguments passed to `Fibbot`
-    required: true
-    default: ''
+    required: false  
+
 outputs:
   results:
     description: The results from calling `Fibbot`
+
 runs:
   using: docker
   image: Dockerfile
   args:
-  - ${{ inputs.args }}
-  
+    - ${{ inputs.args }}
+
+
+
+

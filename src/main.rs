@@ -1,39 +1,72 @@
-use reqwest::blocking::Client;
-// use serde_json::{json, Value};
+use reqwest::Client;
+use serde_json::Value;
+use std::env;
 
-use std::env::{self, args};
+
 fn main() {
-    println!("Hello World!");
-    
-    let args: Vec<String> = args().skip(1).collect();
+    // Get the inputs from environment variables
+    let enable_fib = env::var("INPUT_ENABLE_FIB").unwrap_or_else(|_| "false".to_string()) == "true";
+    let max_threshold: i32 = env::var("INPUT_MAX_THRESHOLD")
+        .unwrap_or_else(|_| "100".to_string())
+        .parse()
+        .unwrap_or(100); // Default to 100 if parsing fails
 
-    if args.is_empty() {
-        println!("No arguments supplied.");
-        return;
-    } else if args.len() != 2 {
-        println!("Fibbot requires exactly two parameters.");
-        return;
+    // Log the values
+    println!("Enable Fibonacci: {}", enable_fib);
+    println!("Max Threshold: {}", max_threshold);
+
+    // Validate the parameters
+    if max_threshold <= 0 {
+        eprintln!("Error: Max threshold must be greater than 0.");
+        std::process::exit(1);
     }
 
-    let enable_fib = args[0].to_lowercase() == "true";
-
-    let max_threshold: usize = match args[1].parse() {
-        Ok(value) => value,
-        Err(_) => {
-            println!("Invalid max_threshold value! It must be an integer.");
-            return;
-        }
-    };
-
+    // Use the inputs in your logic
     if enable_fib {
-        println!("Fibbot enabled successfully with max_threshold: {}", max_threshold);
-        let fib_result = fibonacci(max_threshold.try_into().unwrap());
-        println!("Fibonacci result: {}", fib_result);
-    } else {
-        println!("Fibonacci calculation is disabled.");
+        println!("Fibonacci calculation is enabled.");
+        // Implement Fibonacci logic here
     }
 }
 
+    
+
+// Extract numbers from a string
+fn extract_numbers(input: &str) -> Vec<i32> {
+    let mut numbers = Vec::new();
+    for word in input.split_whitespace() {
+        if let Ok(num) = word.parse::<i32>() {
+            numbers.push(num);
+        }
+    }
+    numbers
+}
+
+// Get the body of a pull request
+pub async fn get_pr_body(pr_number: u128) -> Result<String, Box<dyn std::error::Error>> {
+    let repo = env::var("GITHUB_REPOSITORY")?;
+    let token = env::var("GITHUB_TOKEN")?;
+    let url = format!("https://api.github.com/repos/{}/pulls/{}", repo, pr_number);
+
+    let client = Client::new();
+    let response = client
+        .get(&url)
+        .header("User-Agent", "FibBot")
+        .header("Accept", "application/vnd.github.full+json")
+        .bearer_auth(token)
+        .send()
+        .await?;
+
+    if response.status().is_success() {
+        let json: Value = response.json().await?;
+        if let Some(body) = json.get("body") {
+            return Ok(body.as_str().unwrap_or("").to_string());
+        }
+    }
+
+    Err("Failed to get pull request body".into())
+}
+
+// Compute the nth Fibonacci number
 pub fn fibonacci(n: u128) -> u128 {
     if n == 0 {
         return 0;
@@ -52,6 +85,57 @@ pub fn fibonacci(n: u128) -> u128 {
     }
 
     b
+}
+
+// Process PR content, compute Fibonacci numbers, and post a comment
+pub async fn process_pr(pr_number: u128) -> Result<(), Box<dyn std::error::Error>> {
+    let pr_body = get_pr_body(pr_number).await?;
+    let numbers = extract_numbers(&pr_body);
+
+    let mut results = String::new();
+
+    for num in numbers {
+        let fib = fibonacci(num as u128);
+        results.push_str(&format!("Fibonacci of {} is {}\n", num, fib));
+    }
+
+    // Post a comment with the results
+    let repo = env::var("GITHUB_REPOSITORY")?;
+    let token = env::var("GITHUB_TOKEN")?;
+    let url = format!("https://api.github.com/repos/{}/issues/{}/comments", repo, pr_number);
+
+    let client = Client::new();
+    let response = client
+        .post(&url)
+        .header("User-Agent", "FibBot")
+        .header("Accept", "application/vnd.github.full+json")
+        .bearer_auth(token)
+        .json(&serde_json::json!({ "body": results }))
+        .send()
+        .await?;
+
+    if response.status().is_success() {
+        println!("Comment posted successfully!");
+    } else {
+        println!("Failed to post comment: {}", response.status());
+    }
+
+    Ok(())
+}
+
+async fn process_pull_request_body(body: &str, pr_number: u128) -> Result<(), Box<dyn std::error::Error>> {
+    let numbers = extract_numbers(body);
+    for num in numbers {
+        process_pr(pr_number).await?;
+    }
+    Ok(())
+}
+
+#[tokio::main]
+async fn num() {
+    let pr_body = "This is a sample pull request body with numbers: 10, 20, 30.";
+    let pr_number = 123;
+    process_pull_request_body(pr_body, pr_number).await.unwrap();
 }
 
 #[test]
@@ -89,15 +173,6 @@ fn test_input_parsing() {
     }
 }
 
-fn extract_numbers(input: &str) -> Vec<i32> {
-    let mut numbers = Vec::new();
-    for word in input.split_whitespace() {
-        if let Ok(num) = word.parse::<i32>() {
-            numbers.push(num);
-        }
-    }
-    numbers
-}
 
 
 #[test]
@@ -119,28 +194,3 @@ fn test_fibonacci_efficiency() {
     assert_eq!(fibonacci(94), 19740274219868223167);
 }
 
-pub fn get_pr_body(pr_number: u128) -> Result<String, Box<dyn std::error::Error>> {
-    let repo = env::var("GITHUB_REPOSITORY")?;
-    let token = env::var("GITHUB_TOKEN")?;
-    let url = format!(
-        "https://api.github.com/repos/{}/pulls/{}/files",
-        repo, pr_number
-    );
-
-    let client = Client::new();
-    let response = client
-        .get(&url)
-        .header("User-Agent", "FibBot")
-        .header("Accept", "application/vnd.github.full+json")
-        .bearer_auth(token)
-        .send()?;
-
-    if response.status().is_success() {
-        let json: serde_json::Value = response.json()?;
-        if let Some(body) = json.get("body") {
-            return Ok(body.as_str().unwrap_or("").to_string());
-        }
-    }
-
-    Err("Failed to get pull_request body".into())
-}

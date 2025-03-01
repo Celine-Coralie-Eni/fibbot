@@ -1,48 +1,37 @@
-name: Fibbot GitHub Action
+name: Rust Action
+
 on:
   pull_request:
     types: [opened, synchronize, reopened]
   push:
     branches:
       - master
+permissions:
+  pull-requests: write
+  contents: read
+
 jobs:
-  check_action:
+  build-and-run:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
+      
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Install stable toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Install Fibbot
-        run: cargo install --path .
-
-      - name: Run myapp
-        id: expected
-        run: myapp --option1 'value1'
-
-      - name: Uses an action in the root directory
-        uses: ./ # This is a trick to use the local GitHub action
-        id: actual
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
         with:
-          enable_fib: "true"
-          max_threshold: "100"
+          toolchain: stable
 
-      - name: Compare outputs
-        uses: nick-fields/assert-action@v1
-        with:
-          expected: ${{ inputs.expected.outputs.files }}
-          actual: ${{ inputs.actual.outputs.files }}
+      - name: Install dependencies
+        run: cargo build
 
-          run: |
-            docker run \
-              -e INPUT_ENABLE_FIB=true \
-              -e INPUT_MAX_THRESHOLD=1000 \
-              -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
-              -e GITHUB_API_URL=https://api.github.com \
-              -e GITHUB_REPOSITORY=${{ github.repository }} \
-              -e GITHUB_REF=${{ github.head_ref }} \
-               Fibbot GitHub Action
-
-
+      - name: Run my Rust action
+        uses: ./
+        env:
+          ENABLE_FIB: "true"
+          MAX_THRESHOLD: "100"
