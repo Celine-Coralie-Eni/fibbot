@@ -6,7 +6,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  run-fibbot:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: write

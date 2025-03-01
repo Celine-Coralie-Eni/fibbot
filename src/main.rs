@@ -10,7 +10,7 @@ async fn main() {
     let max_threshold = env::var("INPUT_MAX_THRESHOLD");
     let pr_number = env::var("PR_NUMBER").unwrap_or_else(|_| "0".to_string());
     match pr_number.parse::<u32>() {
-        Ok(num) => {
+        Ok(_num) => {
             // Use the parsed PR number
         },
         Err(e) => {
@@ -31,7 +31,7 @@ async fn main() {
 
     // Calculate Fibonacci values for the extracted numbers
     let mut fibonacci_values = String::from("the fibonacci are\n");
-    for number in numbers {
+    if let Ok(number) = numbers {
         let fib = fibonacci_calc(50);
         fibonacci_values.push_str(&format!("- Fibonacci({}) = {}\n", number, fib));
     }
