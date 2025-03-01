@@ -1,5 +1,3 @@
-name: Rust Action
-
 on:
   pull_request:
     types: [opened, synchronize]
