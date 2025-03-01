@@ -1,4 +1,4 @@
-pub fn fibonacci_calc(n: u32) -> u128 {
+pub fn fibonacci_calc(n: i32) -> i32 {
     if n == 0 {
         0
     } else if n == 1 {

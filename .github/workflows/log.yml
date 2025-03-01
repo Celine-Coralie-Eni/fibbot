@@ -12,13 +12,6 @@ jobs:
       contents: write
       pull-requests: write
       repository-projects: write
-# - name: Set PR_NUMBER
-      #   run: |
-      #     if [ -z "${{ github.event.pull_request.number }}" ]; then
-      #       echo "PR_NUMBER=0" >> $GITHUB_ENV
-      #     else
-      #       echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
-      #     fi
 
     steps:
       - name: Checkout repository

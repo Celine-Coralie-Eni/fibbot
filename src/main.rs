@@ -23,7 +23,7 @@ async fn main() {
     println!("Max Threshold: {}", max_threshold);
 
     // Extract numbers from the pull request content
-    let numbers = get_pr_body(pr_number).await;
+    let numbers = get_pr_body(pr_number.into()).await;
     println!("{:?}", numbers);
 
     // Calculate Fibonacci values for the extracted numbers
