@@ -9,10 +9,3 @@ serde_json = "1.0.85"
 reqwest = { version = "0.12.12", features = ["json"] }
 tokio = { version = "1.0", features = ["full"] }
 
-[[bin]]
-name = "myapp"
-path = "src/main.rs"
-
-# reqwest = { version = "0.11", features = ["json"] }
-# tokio = { version = "1", features = ["full"] }
-# serde = { version = "1.0", optional = true }
