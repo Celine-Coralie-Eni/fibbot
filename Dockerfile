@@ -6,4 +6,4 @@ COPY . .
 
 RUN cargo build --release
 
-ENTRYPOINT ["./target/bin"]
+ENTRYPOINT ["./target/binary"]
