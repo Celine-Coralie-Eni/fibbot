@@ -26,7 +26,7 @@ jobs:
             echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
           fi
 
-      - name: Build and run fibbot
+      - name: Run fibbot
         run: |
           cargo build --release
           ./target/release/fibbot "true" "100"
