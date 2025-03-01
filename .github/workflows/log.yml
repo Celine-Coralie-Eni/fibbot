@@ -1,5 +1,5 @@
 on:
-  pull_request_target:
+  pull_request:
    types: [opened, synchronize]
 
 jobs:
@@ -22,3 +22,4 @@ jobs:
           pr_number: ${{ github.event.pull_request.number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
