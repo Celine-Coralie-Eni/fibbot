@@ -2,36 +2,29 @@ name: Rust Action
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
-  push:
-    branches:
-      - master
-permissions:
-  pull-requests: write
-  contents: read
+    types: [opened, synchronize]
 
 jobs:
-  build-and-run:
+  run-fibbot:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
       repository-projects: write
-      
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+          override: "true"
 
-      - name: Install dependencies
-        run: cargo build
-
-      - name: Run my Rust action
-        uses: ./
-        env:
-          ENABLE_FIB: "true"
-          MAX_THRESHOLD: "100"
+      - name: Run Fibbot
+        uses: Celine-Coralie-Eni/fibbot@master
+        with:
+            pr_number: ${{ github.event.pull_request.number }}
+            enable_fib: "true"
+            max_threshold: "100"
+            github_token: ${{ secrets.GITHUB_TOKEN }}
