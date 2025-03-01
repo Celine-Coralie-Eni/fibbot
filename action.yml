@@ -3,7 +3,7 @@ description: A GitHub Action written in Rust to calculate Fibonacci numbers from
 
 inputs:
   enable_fib:
-    description: 'Enable Fibonacci sequence generation'
+    description: 'Enable Fibonacci calculation'
     required: true
     default: 'true'
   max_threshold:
