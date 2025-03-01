@@ -22,7 +22,6 @@ inputs:
       with:
         toolchain: stable
 
-    - name: Build
       run: cargo build --release
 
     - name: Run
