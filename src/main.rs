@@ -1,88 +1,45 @@
+use get_pr::get_pr_body;
+use fibonacci::fibonacci_calc;
 use std::env;
+use post_comments::post_comment;
 
-fn main() {
-    // Get the inputs from environment variables
-    let enable_fib = env::var("INPUT_ENABLE_FIB").unwrap_or_else(|_| "true".to_string()) == "true";
-    let max_threshold: i32 = env::var("INPUT_MAX_THRESHOLD")
-        .unwrap_or_else(|_| "100".to_string())
-        .parse()
-        .unwrap_or(100); 
+#[tokio::main]
+async fn main() {
+    // Read environment variables
+    let enable_fib = env::var("INPUT_ENABLE_FIB").unwrap_or_else(|_| "true".to_string());
+    let max_threshold = env::var("INPUT_MAX_THRESHOLD").unwrap_or_else(|_| "100".to_string());
+    let pr_number = env::var("PR_NUMBER").unwrap_or_else(|_| "2".to_string());
 
-    // Log the values
-    println!("Enable Fibonacci: {}", enable_fib);
+    // Parse the PR number
+    let pr_number: u32 = match pr_number.parse() {
+        Ok(num) => num,
+        Err(e) => {
+            eprintln!("Invalid PR_NUMBER: {}", e);
+            std::process::exit(1);
+        }
+    };
+
+    println!("Enable Fib: {}", enable_fib);
     println!("Max Threshold: {}", max_threshold);
 
-    // Validate the parameters
-    if max_threshold <= 0 {
-        println!("Error: Max threshold must be greater than 0.");
-        std::process::exit(1);
-    }
+    // Extract numbers from the pull request content
+    let numbers:Vec<u32> = get_pr_body(pr_number.into()).await;
+    println!("{:?}", numbers);
 
-    // Use the inputs in your logic
-    if enable_fib {
-        println!("Fibonacci calculation is enabled.");
-        // Implement Fibonacci logic here
+    // Calculate Fibonacci values for the extracted numbers
+    let mut fibonacci_values = String::from("the fibonacci are\n");
+    for number in numbers {
+        let fib = fibonacci_calc(number);
+        fibonacci_values.push_str(&format!("- Fibonacci({}) = {}\n", number, fib));
     }
+    println!("values: {}", fibonacci_values);
 
+    if let Err(e) = post_comment(&fibonacci_values).await {
+        eprintln!("Error posting comment: {}", e);
+    }
 }
-
-
-// #[test]
-// fn test_input_parsing() {
-//     // Set the environment variables for the input parameters
-//     std::env::set_var("INPUT_ENABLE_FIB", "true");
-//     std::env::set_var("INPUT_MAX_THRESHOLD", "100");
-
-//     // Call the main function to parse the inputs
-//     main();
-
-//     // Verify the parsed values
-//     assert_eq!(
-//         true,
-//         env::var("INPUT_ENABLE_FIB")
-//             .unwrap()
-//             .parse::<bool>()
-//             .unwrap()
-//     );
-//     assert_eq!(
-//         200,
-//         env::var("INPUT_MAX_THRESHOLD")
-//             .unwrap()
-//             .parse::<i32>()
-//             .unwrap()
-//     );
-
-//     let sample_pr_content = "The PR contains 5 changes and 3 bug fixes. The max threshold is 100.";
-//     let extracted_numbers = extract_numbers(sample_pr_content);
-
-//     println!("Extracted numbers: {:?}", extracted_numbers);
-
-//     for num in extracted_numbers {
-//         println!("Fibonacci of {} is {}", num, fibonacci(num as u128));
-//     }
-// }
-
-
-
-// #[test]
-// fn test_fibonacci_edge_cases() {
-//     assert_eq!(fibonacci(0), 0);
-//     assert_eq!(fibonacci(1), 1);
-//     assert_eq!(fibonacci(2), 1);
-//     assert_eq!(fibonacci(3), 2);
-//     assert_eq!(fibonacci(10), 55);
-
-//     // Test for negative input
-//     assert!(std::panic::catch_unwind(|| fibonacci(u128::MAX)).is_err());
-// }
-
-// #[test]
-// fn test_fibonacci_efficiency() {
-//     // Test the function's efficiency for large inputs
-//     assert_eq!(fibonacci(93), 12200160415121876738);
-//     assert_eq!(fibonacci(94), 19740274219868223167);
-// }
 
 mod extract_num;
 mod get_pr;
 mod fibonacci;
+mod post_comments;

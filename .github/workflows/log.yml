@@ -1,12 +1,9 @@
-
-
 on:
-  push:
   pull_request:
-    types: [opened, synchronize]
+   types: [opened, synchronize]
 
 jobs:
-  run-fibbot:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -14,18 +11,15 @@ jobs:
       repository-projects: write
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
+      - name: Build and run action
+        uses: ./
         with:
-          toolchain: stable
-          override: "true"
-
-      - name: Run Fibbot
-        uses: Celine-Coralie-Eni/fibbot@master
-        with:
-            pr_number: ${{ github.event.pull_request.number }}
-            enable_fib: "true"
-            max_threshold: "100"
-            github_token: ${{ secrets.GITHUB_TOKEN }}
+          enable_fib: true
+          max_threshold: 100
+          pr_number: ${{ github.event.pull_request.number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}

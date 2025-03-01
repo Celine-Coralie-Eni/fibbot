@@ -1,19 +1,10 @@
-pub fn fibonacci(n: u128) -> u128 {
+pub fn fibonacci_calc(n: u32) -> u32 {
     if n == 0 {
-        return 0;
+        0
     } else if n == 1 {
-        return 1;
+        1
+    } else {
+        fibonacci_calc(n - 1) + fibonacci_calc(n - 2)
     }
-
-    let mut a = 0;
-    let mut b = 1;
-    let mut c;
-
-    for _ in 2..=n {
-        c = a + b;
-        a = b;
-        b = c;
-    }
-
-    b
 }
+
