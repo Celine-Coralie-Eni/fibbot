@@ -8,5 +8,4 @@ pub async fn get_pr_body(pr_number: u64) -> Vec<i32>{
     let nums = extract_numbers(&files.as_str().to_string());
     nums
  }
-
  

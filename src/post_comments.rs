@@ -15,18 +15,6 @@ pub async fn post_comment(pr_content: &str) -> Result<(), reqwest::Error> {
         repo, pr_number
     );
 
-
-
-
-
-    // pub async fn fetch_pr_content(owner: &str, repo: &str, pr_number: u32) -> Result<String> {
-    //     let token = env::var("GITHUB_TOKEN").context("GITHUB_TOKEN environment variable is not set")?;
-    //     let client = Client::new();
-    //     let url = format!(
-    //         "https://api.github.com/repos/{}/{}/pulls/{}/files",
-    //         owner, repo, pr_number
-    //     );
-
     let client = Client::new();
     let response = client
         .post(&url)
