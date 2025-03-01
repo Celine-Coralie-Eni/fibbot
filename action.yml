@@ -1,5 +1,5 @@
 name: Fibbot
-description: 'A GitHub Action to calculate Fibonacci numbers from PR content.'
+description: 'A GitHub Action to calculate Fibonacci numbers from the contents of a PR.'
 inputs:
   enable_fib:
     description: 'Enable Fibonacci calculation'
@@ -8,37 +8,27 @@ inputs:
   max_threshold:
     description: 'Maximum number for Fibonacci calculation'
     required: true
-<<<<<<< HEAD
-    default: "100"
-  github_token: 
-    description: "getting github"
+    default: '100'
+  github_token:
+    description: 'GitHub token for authentication'
     required: true
-  pr_number: 
-    description: "getting github"
+  pr_number:
+    description: 'Pull Request number'
     required: true
 
+runs:
+  using: "composite"
+  steps:
     - name: Install Rust
       uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
 
-      run: cargo build --release
-
-    - name: Run
-      run: ./target/release/fibbot
-    
-=======
-    default: '100'
->>>>>>> refs/remotes/origin/master
-runs:
-  using: "composite"
-  # image: 'Dockerfile'
-  steps:
     - name: Build FibBot
       run: cargo build --release
       shell: bash
 
-    - name: Run Fibbot
+    - name: Run FibBot
       run: |
         export PR_NUMBER="${{ inputs.pr_number }}"
         export GITHUB_TOKEN="${{ inputs.github_token }}"
