@@ -16,10 +16,11 @@ A GitHub Action in Rust that scans pull request content for numbers, calculates 
 
 Then do move to the fibbot directory and open the project in VScode using the ```code .``` command.
 
-After this, create a new GitHub repository named fibbot and give it a public access and readme file. In this reposit
+After this, create a new GitHub repository named fibbot and give it a public access and readme file. In this repository create an action.yml file and precise the neccesary actions to be performed.
 
+Create a workflow file in the .github/workflows file and update it to contain the following:
 
-
+>
 
 
 
