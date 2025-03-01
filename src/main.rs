@@ -8,7 +8,7 @@ fn main() {
     let max_threshold: i32 = env::var("INPUT_MAX_THRESHOLD")
         .unwrap_or_else(|_| "100".to_string())
         .parse()
-        .unwrap_or(100); // Default to 100 if parsing fails
+        .unwrap_or(100); 
 
     // Log the values
     println!("Enable Fibonacci: {}", enable_fib);
