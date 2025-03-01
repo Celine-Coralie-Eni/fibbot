@@ -3,11 +3,11 @@ description: an action to confirm hello world and the fibonacci numbers of the n
 
 inputs:
   enable_fib:
-    description: "variable verifies if fib-program is enabled or not"
+    description: "Enables the fibonacci calculation"
     required: false
     default: "true"
   max_threshold:
-    description: "provides the max fib value to be used for fib-program"
+    description: "Provides the maximum value for which the fibonacci function should take "
     required: true
     default: "100"
   github_token: 
@@ -17,11 +17,23 @@ inputs:
     description: "getting github"
     required: true
 
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
 
+    - name: Build
+      run: cargo build --release
+
+    - name: Run
+      run: ./target/release/fibbot
+    
 runs:
   using: "docker"
   image: "Dockerfile"
   args:
     - ${{ inputs.enable_fib }}
     - ${{ inputs.max_threshold }}
-    
+
+   
+
