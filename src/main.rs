@@ -1,7 +1,6 @@
-use reqwest::Client;
-use serde_json::Value;
 use std::env;
-
+use extract_num::extract_numbers;
+use crate::fibonacci::fibonacci;
 
 fn main() {
     // Get the inputs from environment variables
@@ -26,65 +25,13 @@ fn main() {
         println!("Fibonacci calculation is enabled.");
         // Implement Fibonacci logic here
     }
+
+    let pr_content = "This PR fixes issue 42 and adds 3 new features.";
+    let numbers = extract_numbers(pr_content);
+    println!("{:?}", numbers); // Output: [42, 3]
+
 }
 
-    
-
-
-
-
-
-
-// Process PR content, compute Fibonacci numbers, and post a comment
-pub async fn process_pr(pr_number: u128) -> Result<(), Box<dyn std::error::Error>> {
-    let pr_body = get_pr_body(pr_number).await?;
-    let numbers = extract_numbers(&pr_body);
-
-    let mut results = String::new();
-
-    for num in numbers {
-        let fib = fibonacci(num as u128);
-        results.push_str(&format!("Fibonacci of {} is {}\n", num, fib));
-    }
-
-    // Post a comment with the results
-    let repo = env::var("GITHUB_REPOSITORY")?;
-    let token = env::var("GITHUB_TOKEN")?;
-    let url = format!("https://api.github.com/repos/{}/issues/{}/comments", repo, pr_number);
-
-    let client = Client::new();
-    let response = client
-        .post(&url)
-        .header("User-Agent", "FibBot")
-        .header("Accept", "application/vnd.github.full+json")
-        .bearer_auth(token)
-        .json(&serde_json::json!({ "body": results }))
-        .send()
-        .await?;
-
-    if response.status().is_success() {
-        println!("Comment posted successfully!");
-    } else {
-        println!("Failed to post comment: {}", response.status());
-    }
-
-    Ok(())
-}
-
-async fn process_pull_request_body(body: &str, pr_number: u128) -> Result<(), Box<dyn std::error::Error>> {
-    let numbers = extract_numbers(body);
-    for num in numbers {
-        process_pr(pr_number).await?;
-    }
-    Ok(())
-}
-
-#[tokio::main]
-async fn num() {
-    let pr_body = "This is a sample pull request body with numbers: 10, 20, 30.";
-    let pr_number = 123;
-    process_pull_request_body(pr_body, pr_number).await.unwrap();
-}
 
 #[test]
 fn test_input_parsing() {
