@@ -12,24 +12,25 @@ jobs:
       contents: write
       pull-requests: write
       repository-projects: write
-
+# - name: Set PR_NUMBER
+      #   run: |
+      #     if [ -z "${{ github.event.pull_request.number }}" ]; then
+      #       echo "PR_NUMBER=0" >> $GITHUB_ENV
+      #     else
+      #       echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+      #     fi
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set PR_NUMBER
-        run: |
-          if [ -z "${{ github.event.pull_request.number }}" ]; then
-            echo "PR_NUMBER=0" >> $GITHUB_ENV
-          else
-            echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
-          fi
+      # 
 
-      - name: Run fibbot
-        run: |
-          cargo build --release
-          ./target/release/fibbot "true" "100"
+      - name: Build and run action
+        uses: ./
+        with:
+          enable_fib: true
+          max_threshold: 237
+          pr_number: ${{ github.event.pull_request.number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
