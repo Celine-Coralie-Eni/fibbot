@@ -14,6 +14,7 @@ pub async fn post_comment(pr_content: &str) -> Result<(), reqwest::Error> {
         "https://api.github.com/repos/{}/issues/{}/comments",
         repo, pr_number
     );
+     println!( "url {}", url);
 
     let client = Client::new();
     let response = client
