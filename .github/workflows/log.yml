@@ -1,14 +1,21 @@
-on:
-  pull_request:
-   types: [opened, synchronize]
+ name: Integration Tests
+on: 
+ pull_request_target:
+    types: [opened, synchronize]
 
+permissions:
+  pull-requests: write
+  contents: read
+  issues: read
+
+# permissions: [opened, synchronize]
 jobs:
-  build:
+  test-action:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
-      repository-projects: write
+#      repository-projects: write
 
     steps:
       - name: Checkout repository
@@ -18,8 +25,10 @@ jobs:
         uses: ./
         with:
           enable_fib: true
-          max_threshold: 100
+          max_threshold: 237
           pr_number: ${{ github.event.pull_request.number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+
+          
